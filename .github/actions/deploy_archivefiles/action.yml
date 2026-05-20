@@ -1,0 +1,16 @@
+name: Deploy_Archivefiles
+inputs:
+  rootfolder:
+    required: false
+    default: "$(Pipeline.Workspace)/drop/$(Name)"
+    type: string
+  archivefile:
+    required: false
+    default: "$(Pipeline.Workspace)/drop/$(Name).deploy.zip"
+    type: string
+runs:
+  using: composite
+  steps:
+  - name: Zip files
+    run: 7z u ${{ inputs.archivefile }} ./${{ inputs.rootfolder }}/*
+    shell: bash
