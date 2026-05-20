@@ -1,0 +1,9 @@
+name: DevOps_Build_Pipeline
+runs:
+  using: composite
+  steps:
+  - uses: "./.github/actions/build_dotnetrestorefeed"
+  - uses: "./.github/actions/build_dotnetbuild"
+  - uses: "./.github/actions/build_dotnettest"
+  - uses: "./.github/actions/build_dotnetpublish"
+  - uses: "./.github/actions/build_publishartifacts"
