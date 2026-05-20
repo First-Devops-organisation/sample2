@@ -1,0 +1,8 @@
+name: DevOps_Deploy
+runs:
+  using: composite
+  steps:
+  - uses: "./.github/actions/deploy_extractfiles"
+  - uses: "./.github/actions/deploy_replacetoken"
+  - uses: "./.github/actions/deploy_archivefiles"
+  - uses: "./.github/actions/deploy_azurewebappdeployment"
