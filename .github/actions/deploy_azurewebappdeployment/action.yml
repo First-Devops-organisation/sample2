@@ -1,0 +1,14 @@
+name: Deploy_AzureWebAppDeployment
+inputs:
+  webappname:
+    required: false
+    default: "$(WebAppName)"
+    type: string
+  packagezip:
+    required: false
+    default: "$(Pipeline.Workspace)/drop/$(Name).deploy.zip"
+    type: string
+runs:
+  using: composite
+  steps:
+#   # AzureRmWebAppDeployment@4: unsupported application type ()
