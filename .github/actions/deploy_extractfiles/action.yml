@@ -1,0 +1,30 @@
+name: Deploy_Extractfiles
+inputs:
+  sourceDirectory:
+    required: false
+    default: "$(Pipeline.Workspace)/drop/*.zip"
+    type: string
+  destinationFolder:
+    required: false
+    default: "$(Pipeline.Workspace)/drop/$(Name)"
+    type: string
+runs:
+  using: composite
+  steps:
+  - name: Extract Files
+    uses: actions/github-script@v7.0.0
+    env:
+      DESTINATION_FOLDER: "${{ inputs.destinationFolder }}"
+      ARCHIVE_FILE_PATTERNS: "${{ inputs.sourceDirectory }}"
+    with:
+      script: |-
+        const fs = require('fs').promises
+        const path = require('path')
+        const target = path.resolve(process.env.DESTINATION_FOLDER)
+        const patterns = process.env.ARCHIVE_FILE_PATTERNS
+        const globber = await glob.create(patterns)
+        await io.mkdirP(path.dirname(target))
+        for await (const file of globber.globGenerator()) {
+          if ((await fs.lstat(file)).isDirectory()) continue
+          await exec.exec(`7z x ${file} -o${target} -aoa`)
+        }
