@@ -1,0 +1,48 @@
+name: YASH-DevOps-Serverless/svn_git
+on:
+  workflow_dispatch:
+env:
+  system_debug: 'true'
+jobs:
+  Job_1:
+    name: Agent job 1
+    runs-on: windows-2019
+    steps:
+    - name: checkout
+      uses: actions/checkout@v4.1.0
+    - name: Bash Script
+      run: |-
+        # Write your commands here
+        sudo add-apt-repository ppa:git-core/ppa -y
+        sudo apt update -y
+        sudo apt install git-svn -y
+        sudo apt-get install subversion
+        svn status
+      shell: bash
+    - name: Bash Script
+      if: 'false'
+      run: |-
+        svn checkout https://svn.riouxsvn.com/secondrepo123 |
+        --username=yashsaurabh  --password= Saurabh@123
+        svn log -q https://svn.riouxsvn.com/secondrepo123 | awk -F '|' '/^r/ {sub("^ ", "", $2); sub(" $", "", $2); print $2" = "$2" <"$2">"}' | sort -u > authors.txt
+        ls
+        cat authors.txt
+      shell: bash
+    - name: PowerShell Script
+      run: |-
+        $SvnUrl = "https://svn.riouxsvn.com/secondrepo123"
+        pwsh Get-SvnUsers.ps1 $SvnUrl "gmail.com" | out-file -encoding ascii users.txt
+        Get-Content ./users.txt
+        pwsh Clone-SvnToGit.ps1 $SvnUrl ./users.txt
+        cd ./secondrepo123
+        git remote add origin https://yashsaurabh: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@github.com/yashsaurabh/Fithrepo123.git
+        git push origin --all 2> $null
+        git push origin --tags 2> $null
+      shell: powershell
+    - name: Bash Script
+      if: 'false'
+      run: |-
+        # Write your commands here
+        ls
+        cat users.txt
+      shell: bash
