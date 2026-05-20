@@ -1,0 +1,17 @@
+name: Deploy_ReplaceToken
+inputs:
+  targetfile:
+    required: false
+    default: "$(Pipeline.Workspace)/drop/*.config"
+    type: string
+runs:
+  using: composite
+  steps:
+#   # This item has no matching transformer
+#   - task: qetza.replacetokens.replacetokens-task.replacetokens@5
+#     displayName: Replace tokens
+#     inputs:
+#       targetFiles: "${{ inputs.targetfile}}"
+#       encoding: auto
+#       tokenPattern: azpipelines
+#       writeBOM: true
