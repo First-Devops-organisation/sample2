@@ -1,0 +1,24 @@
+name: YASH-DevOps-Serverless/MyHealth.Common
+on:
+  push:
+    branches:
+    - main
+env:
+  buildConfiguration: Release
+  solutionPath: MyHealth.Common/MyHealth.Common.sln
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - name: checkout
+      uses: actions/checkout@v4.1.0
+    - name: Install .NET SDK 3.x
+      uses: actions/setup-dotnet@v4.0.0
+      with:
+        dotnet-version: 3.x
+    - name: Restore from Feed Connection
+      run: |-
+        dotnet nuget add source "https://pkgs.dev.azure.com/YashTech-DevOps/_packaging/c04daad4-1947-416b-83e2-f310ca02e34e/nuget/v3/index.json" --name "c04daad4-1947-416b-83e2-f310ca02e34e" --username "n/a" --password "${{ secrets.AZURE_DEVOPS_TOKEN }}" --store-password-in-clear-text
+        dotnet restore ${{ env.solutionPath }}
+    - name: Build Project
+      run: dotnet build ${{ env.solutionPath }} --configuration ${{ env.buildConfiguration }} --no-restore
