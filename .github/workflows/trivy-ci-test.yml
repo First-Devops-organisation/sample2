@@ -1,0 +1,43 @@
+name: YASH-DevOps-Serverless/trivy-ci-test
+on:
+  push:
+    branches:
+    - githubmigration
+env:
+  imageName: my-custom-app:latest
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout
+      uses: actions/checkout@v4.1.0
+    - name: Build Docker Image
+      run: |-
+        echo "Building Docker image..."
+        docker build -t ${{ env.imageName }} .
+    - name: Install Trivy
+      run: |-
+        echo "Installing Trivy..."
+        sudo apt-get update
+        sudo apt-get install -y wget apt-transport-https gnupg lsb-release
+        wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+        echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+        sudo apt-get update
+        sudo apt-get install -y trivy
+    - name: Run Trivy Scan on Docker Image
+      continue-on-error: true
+      run: |-
+        mkdir -p ${{ runner.temp }}/trivy-results
+        trivy image --scanners vuln,config,secret --format template --template "@template/junit.tpl" \
+          --output ${{ runner.temp }}/trivy-results/trivy-junit.xml \
+          --severity HIGH,CRITICAL,MEDIUM,LOW ${{ env.imageName }}
+    - name: Publish Trivy Report
+      uses: actions/upload-artifact@v4.1.0
+      with:
+        name: TrivyScanResults
+        path: "${{ runner.temp }}/trivy-results"
+    - name: Publish test results
+      if: always()
+      uses: EnricoMi/publish-unit-test-result-action@v2.12.0
+      with:
+        junit_files: "${{ runner.temp }}/trivy-results/trivy-junit.xml"
