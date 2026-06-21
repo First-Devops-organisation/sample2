@@ -1,0 +1,13 @@
+name: YASH-DevOps-Serverless/Testing-ADO-Playright
+on:
+  push:
+    branches:
+    - feature/test2
+jobs:
+  Build:
+    name: Build Job
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout
+      uses: actions/checkout@v4.1.0
+    - uses: First-Devops-organisation/central-repo/.github/actions/devops_build@main
