@@ -1,0 +1,8 @@
+name: DevOps_Deploy
+runs:
+  using: composite
+  steps:
+  - uses: First-Devops-organisation/reuse-repo/.github/actions/deploy_extractfiles@main
+  - uses: First-Devops-organisation/reuse-repo/.github/actions/deploy_replacetoken@main
+  - uses: First-Devops-organisation/reuse-repo/.github/actions/deploy_archivefiles@main
+  - uses: First-Devops-organisation/reuse-repo/.github/actions/deploy_azurewebappdeployment@main
