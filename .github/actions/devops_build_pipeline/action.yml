@@ -1,0 +1,9 @@
+name: DevOps_Build_Pipeline
+runs:
+  using: composite
+  steps:
+  - uses: First-Devops-organisation/reuse-repo/.github/actions/build_dotnetrestorefeed@main
+  - uses: First-Devops-organisation/reuse-repo/.github/actions/build_dotnetbuild@main
+  - uses: First-Devops-organisation/reuse-repo/.github/actions/build_dotnettest@main
+  - uses: First-Devops-organisation/reuse-repo/.github/actions/build_dotnetpublish@main
+  - uses: First-Devops-organisation/reuse-repo/.github/actions/build_publishartifacts@main
